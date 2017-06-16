@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{{ STATIC_URL }}/css/commons.css" />
+    {% block css %} {% endblock %}
+</head>
+<body>
+    <div class="pg-header">
+        <div class="w">
+            <a class="logo" href="/"></a>
+            <div class="act-menu">
+                <a href="/all/hot/recent/1" class="tb active">全部</a>
+                <a href="/all/hot/recent/1" class="tb">42区</a>
+                <a href="/all/hot/recent/1" class="tb">段子</a>
+                <a href="/all/hot/recent/1" class="tb">图片</a>
+                <a href="/all/hot/recent/1" class="tb">挨踢1024</a>
+                <a href="/all/hot/recent/1" class="tb">你问我答</a>
+            </div>
+            <div class="key-sera">
+
+                <form action="/search/show" method="post" name="searchFrm2" id="searchFrm2">
+                    <input type="text" class="search-txt-s" name="words" id="txtSearch2" autocomplete="off">
+
+                    <a href="javascript:;" class="i" name="searchBtn_2" id="searchBtn_3"><span class="ico"></span></a>
+                    <input type="hidden" value="1" id="page" name="page">
+                </form>
+
+		    </div>
+
+            <div class="action-nav">
+				<a href="/show/flow/1" style="float:left;position:relative;" id="btnDtaiShw">动态
+					<b class="notice-num-title" id="Dtai-num-title" style="right: 3px; display: none;">
+						<em id="Dtai-em"></em>
+                    </b>
+				</a>
+				<a href="javascript:;" id="btnNotShw" class="notice-box">通知
+					<b class="notice-num-title" id="notice-num-title" style="display: none;">
+						<em id="notice-em"></em>
+						<i>+</i>
+					</b>
+				</a>
+				<a href="/user/link/saved/1" id="loginUserNc" class="userPro-Box">
+					<img src="http://img2.chouti.com/CHOUTI_05B313F703D34646848BCC5571510683_W148H148=30x30).jpg" id="userProImg">
+					<span class="u-nick" id="userProNick">一米八大高...</span>
+					<em id="userProArr"></em>
+				</a>
+		    </div>
+            <div class="user-opr-box" id="userOprBox" style="left: 869px; display: none;">
+                <a href="/user/link/saved/1" style="border-top:0;">我的新热榜</a>
+                <a href="/profile">设置</a>
+                <a class="logout" href="javascript:;">退出</a>
+                <a href="http://www.chouti.com/cdu_45792645155" target="_blank" class="ie6-a">我的收藏</a>
+                </div>
+            </div>
+    </div>
+
+    <div class="pg-body">
+
+        {% block body %} {% endblock %}
+
+    </div>
+    <h1>{{ STATIC_URL }}</h1>
+
+    <script src="{{ STATIC_URL }}/js/jquery-2.1.4.min.js"></script>
+    {% block javascript %} {% endblock %}
+    <script>
+        $(function(){
+            $('#loginUserNc,#userOprBox').mouseover(function(){
+                $('#userOprBox').css('display', 'block');
+                $('#loginUserNc').addClass('active');
+            }).mouseout(function () {
+                $('#userOprBox').css('display', 'none');
+                $('#loginUserNc').removeClass('active');
+            })
+        })
+    </script>
+</body>
+</html>

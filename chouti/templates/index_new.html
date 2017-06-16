@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>抽屉新热榜</title>
+    <link rel="stylesheet" href="/static/css/commons.css"/>
+    <link rel="stylesheet" href="/static/bootstrap-3.3.7/css/bootstrap.css">
+    <script src="/static/jquery.js"></script>
+    <script src="/static/bootstrap-3.3.7/js/bootstrap.js"></script>
+    <style>
+{#        多级评论缩进样式#}
+        .comment > .content {
+            margin-left: 30px;
+        }
+    </style>
+</head>
+<body>
+<div class="pg-header">
+    <div class="w">
+        <a class="logo" href="/"></a>
+        <div class="act-menu">
+            <a href="/all/hot/recent/1" class="tb active">全部</a>
+            <a href="/all/hot/recent/1" class="tb">42区</a>
+            <a href="/all/hot/recent/1" class="tb">段子</a>
+            <a href="/all/hot/recent/1" class="tb">图片</a>
+            <a href="/all/hot/recent/1" class="tb">挨踢1024</a>
+            <a href="/all/hot/recent/1" class="tb">你问我答</a>
+        </div>
+        <div class="key-sera">
+
+            <form action="/search/show" method="post" name="searchFrm2" id="searchFrm2">
+                <input type="text" class="search-txt-s" name="words" id="txtSearch2" autocomplete="off">
+
+                <a href="javascript:;" class="i" name="searchBtn_2" id="searchBtn_3"><span class="ico"></span></a>
+                <input type="hidden" value="1" id="page" name="page">
+            </form>
+
+        </div>
+        {#  登录前后判断#}
+        {% if request.session.u %}
+            <div class="action-nav">
+                <a href="/show/flow/1" style="float:left;position:relative;" id="btnDtaiShw">动态
+                    <b class="notice-num-title" id="Dtai-num-title" style="right: 3px; display: none;">
+                        <em id="Dtai-em"></em>
+                    </b>
+                </a>
+                <a href="javascript:;" id="btnNotShw" class="notice-box">通知
+                    <b class="notice-num-title" id="notice-num-title" style="display: none;">
+                        <em id="notice-em"></em>
+                        <i>+</i>
+                    </b>
+                </a>
+                <a href="/user/link/saved/1" id="loginUserNc" class="userPro-Box">
+
+                    <span class="u-nick" id="userProNick">一米八大高...</span>
+                    <em id="userProArr"></em>
+                </a>
+            </div>
+        {% else %}
+            <!-- Button trigger modal -->
+            <div style="text-align: right">
+                <button type="button" class="btn btn-primary " data-toggle="modal" data-target="#myModal">
+                    登录
+                </button>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                    aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">登录</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form id="id_from_login">
+                                {% csrf_token %}
+                                <p>用户名</p>{{ login_form.username }}
+                                <span class="label label-warning" id="id_alert_username"></span>
+                                <p>密码</p>{{ login_form.password }}
+                                <span class="label label-warning" id="id_alert_password"></span>
+                                <p>验证码</p>
+                                {{ login_form.auth_code }}
+                                <span class="label label-warning" id="id_alert_auth_code"></span>
+                                <img src="/auth_code/" onclick="changeImg(this);">
+
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <span class="label label-warning" id="id_alert_up"></span>
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="button" id="id_login" class="btn btn-primary">登录</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% endif %}
+    </div>
+</div>
+
+<div class="pg-body">
+
+    <div style="background-color: #eee;">
+        <div class="w body-content">
+            <div class="clearfix">
+                <div class="content-l">
+                    <div class="nav-top-area">
+                        <div class="child-nav">
+                            <!-- 当不是全部页面时 -->
+                            <a href="/r/pic/hot/1" hidefocus="false" class="icons active hotbtn"
+                               id="hotts-nav-btn">最热</a>
+                            <a href="/r/pic/new/1" hidefocus="false" class="newbtn" id="newest-nav-btn">最新</a>
+                            <!-- 当是全部页面时 -->
+                        </div>
+                        <!-- 当是全部页面时 -->
+                        <!-- Button trigger modal -->
+                        <button type="button" class="publish-btn" data-toggle="modal" data-target="#myModal-publish">
+                            <span class="ico n1"></span><span class="n2">发布</span>
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="myModal-publish" tabindex="-1" role="dialog"
+                             aria-labelledby="myModalLabel">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span></button>
+                                        <h4 class="modal-title" id="myModalLabel">发布</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form id="id_publish_form" action="/publish/" method="POST"
+                                              enctype="multipart/form-data" target="ifr">
+                                            {% csrf_token %}
+                                            {{ publish_form.title }}
+                                            <span class="label label-warning" id="id_alert_titile"></span><br>
+                                            {{ publish_form.summary }}
+                                            <span class="label label-warning" id="id_alert_summary"></span><br>
+                                            <input type="file" class="form-control" name="picture_file"
+                                                   id="id_picture_file">
+                                            <span class="label label-warning" id="id_alert_file"></span><br>
+                                            {{ publish_form.nt_id }}
+                                            <span class="label label-warning" id="id_alert_nt_id"></span><br>
+                                        </form>
+                                        {#                                        onload 事件会在页面或图像加载完成后立即发生#}
+                                        <iframe id="ifr" name="ifr" onload="successBack();"
+                                                style="display: none"></iframe>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" onclick="Submit_publish();">提交
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    {% block content_l %}
+                    {% endblock %}
+
+                </div>
+
+                <div class="content-r">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(function () {
+        bindLogin();
+    });
+
+    function bindLogin() {
+        $('#id_login').click(function () {
+            console.log($('#id_from_login').serialize())
+            $.ajax({
+                        url: '/login/',
+                        type: 'POST',
+                        data: $('#id_from_login').serialize(),
+                        dataType: 'json',
+                        success: function (data) {
+                            if (!data.status) {
+                                if (data.error) {
+                                    $('#id_alert_up').text(data.error);
+                                }
+                                else {
+                                    $('#id_alert_username').text(data.data.username);
+                                    $('#id_alert_password').text(data.data.password);
+                                    $('#id_alert_auth_code').text(data.data.auth_code);
+                                }
+                            } else {
+                                location.href = '/'
+                            }
+                        }
+                    }
+            )
+        })
+    }
+</script>
+
+<script>
+    //onload 执行的回调函数
+    function successBack() {
+        var v = $('#ifr').contents().find('body').html();
+        var obj = JSON.parse(v);
+        if (obj.status) {
+            location.href = '/';
+        } else {
+            if (obj.error) {
+                $('#id_alert_file').text(obj.error);
+            } else {
+                $('#id_alert_titile').text(obj.data.title);
+                $('#id_alert_summary').text(obj.data.summary);
+                $('#id_alert_nt_id').text(obj.data.nt_id);
+            }
+        }
+    }
+
+    // 提交按钮在另一个div ， 所有用js提交
+    function Submit_publish() {
+        document.getElementById('id_publish_form').submit();
+    }
+
+
+    //加个？就是一次get请求
+    function changeImg(ths) {
+        ths.src = ths.src + "?";
+    }
+</script>
+</body>
+</html>

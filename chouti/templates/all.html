@@ -1,0 +1,160 @@
+{% extends 'index_new.html' %}
+
+{% block content_l %}
+
+
+
+
+    <div class="content-list" id="content_list">
+        <div class="item">
+            {% for foo in all_obj %}
+                <div class="item">
+
+
+                    <div class="news-pic">
+                        <img lang="8118680"
+                                {#                     original="http://img2.chouti.com/CHOUTI_18A9ECD30D9044D8872301BDC8FD4460_W265H265=C60x60.jpg"#}
+                             src="{{ foo.href }}"
+                             alt="抽屉新热榜" style="display: inline;">
+                    </div>
+
+
+                    <div class="news-content" id="newsContent8118680">
+                        <div class="part1">
+                            <a href="http://wallstreetcn.com/node/232597" class="show-content" target="_blank"
+                               onmousedown="linksClickStat(8118680);">{{ foo.title }}</a>
+                            <span class="content-source">-wallstreetcn.com</span>
+                        </div>
+                        <!-- 显示摘要 -->
+                        <div class="area-summary">
+                            <span class="summary">{{ foo.summary }}</span>
+                        </div>
+                        <div class="part2"
+                             share-pic="http://img2.chouti.com/CHOUTI_AD764B84163A4A8093C2BF54CEAA4AAB_W400H266.jpg"
+                             share-title="进入调整期？深圳二手房成交较年初锐减30%"
+                             share-summary="多家中介数据显示，深圳3月二手房成交量比1月下降超过30%，新房成交量同样出现下降。分析称，政策收紧预期较大程度上影响了市场成交，而业主方多看好后市，双方存在一定博弈。预计4月评估价调整政策落地后，二手房市场或进入短暂调整期。"
+                             share-linkid="8118680" share-subject="42区">
+                            <form id="favor_new_id">
+                                {% csrf_token %}
+                                <input type="hidden" name="nid" value="{{ foo.id }}">
+                            </form>
+                            <a style="position: relative;" id="favor_{{ foo.id }}" class="digg-a" title="推荐"
+                               onclick="favor(this,{{ foo.id }});">
+                                <span class="hand-icon icon-digg"></span><b id="id_favor">{{ foo.favor_num }}</b><i
+                                    style="display:none">8118680</i>
+                            </a>
+                            <a class="discus-a" id="discus-a-8118680" lang="8118680"
+                               onclick="comment(this,{{ foo.id }});"
+                               title=""><span class="hand-icon icon-discus"></span><b>{{ foo.comment_num }}</b></a>
+                            <a href="javascript:;" class="collect-a" id="collect-a-8118680" lang="8118680"
+                               title="加入私藏" destjid="cdu_45792645155" jid="chouti150326"><span
+                                    class="hand-icon icon-collect"></span><b>私藏</b></a>
+                            <a href="/user/chouti150326/submitted/1"
+                               class="user-a"><span></span><b>{{ foo.author.username }}</b></a>
+                        <span class="left time-into"><a class="time-a" href="/link/8118680"
+                                                        target="_blank"><b>{{ foo.ctime }}</b></a><i>入热榜</i></span>
+                            <!-- 分享各微博的按钮 -->
+
+                                    <span class="share-site-to" style="visibility: hidden;"><i>分享到</i><span
+                                            class="share-icon"><a class="icon-sina" id="icon-sina" title="分享到新浪微博"
+                                                                  href="javascript:;" hidefocus="true"></a><a
+                                            class="icon-douban" id="icon-douban" title="分享到豆瓣" href="javascript:;"
+                                            hidefocus="true"></a><a class="icon-qqzone" id="icon-qqzone" title="分享到QQ空间"
+                                                                    href="javascript:;" hidefocus="true"></a><a
+                                            class="icon-tenxun" id="icon-tenxun" title="分享到腾讯微博" href="javascript:;"
+                                            hidefocus="true"></a><a class="icon-renren" id="icon-renren" title="分享到人人网"
+                                                                    href="javascript:;" hidefocus="true"></a><a
+                                            class="share-none"> </a></span></span></div>
+                    </div>
+                    <div id="id_comment"></div>
+                </div>
+            {% endfor %}
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {{ page_info.page_str | safe }}
+            </ul>
+        </nav>
+
+        <script>
+            // 显示多级评论
+            function comment(ths, id) {
+                $.ajax({
+                    url: '/comment/',
+                    type: 'POST',
+                    data: {nid: id},
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.no_login) {
+                            $('#myModal').modal('show')
+                        } else {
+                            var close = '<div><button type="button" class="close"><span aria-hidden="true">&times;</span></button></div>'
+                            console.log(close + data.data);
+
+                            $(ths).parent().parent().siblings('#id_comment').append(close + data.data);
+                        }
+                    }
+                })
+
+            }
+
+            //点赞ajax
+
+            function favor(ths, a) {
+                console.log(a)
+                $.ajax({
+                    url: '/favor/',
+                    type: 'POST',
+                    data: {nid: a},
+                    dataType: 'json',
+                    success: function (data) {
+                        var now_num = $(ths).find('#id_favor').text();
+                        if (data.no_login) {
+                            $('#myModal').modal('show')
+                        } else {
+                            if (data.status) {
+                                $(ths).find('#id_favor').text(parseInt(now_num) + 1);
+                                ZMM(ths, '+1');
+                            } else {
+                                $(ths).find('#id_favor').text(parseInt(now_num) - 1);
+                                ZMM(ths, '-1');
+                            }
+                        }
+                    }
+                })
+
+            }
+            // 点赞动画
+            function ZMM(ths, txt) {
+                var fontSize = 5;
+                var left = 5;
+                var top = 5;
+                var opacity = 1;
+
+                var tag = document.createElement('span');
+                tag.innerHTML = txt;
+                tag.style.position = "absolute";
+                tag.style.fontSize = fontSize + 'px';
+                tag.style.left = left + 'px';
+                tag.style.top = top + 'px';
+                tag.style.opacity = opacity;
+                $(ths).append(tag);
+
+                var obj = setInterval(function () {
+                    fontSize = fontSize + 5;
+                    left = left + 5;
+                    top = top - 5;
+                    opacity = opacity - 0.1;
+                    tag.style.fontSize = fontSize + 'px';
+                    tag.style.left = left + 'px';
+                    tag.style.top = top + 'px';
+                    tag.style.opacity = opacity;
+                    if (left > 60) {
+                        clearInterval(obj);
+                        tag.remove();
+                    }
+                }, 100);
+            }
+
+        </script>
+{% endblock %}
