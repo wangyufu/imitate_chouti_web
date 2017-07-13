@@ -18,3 +18,7 @@
 		如果未登录，点赞和评论时会提示登录。    
 		新加：    
 			验证码、多级评论、优化点赞效果     
+
+![](https://github.com/wangyufu/imitate_chouti_web/blob/master/static/login.png)
+
+![](https://github.com/wangyufu/imitate_chouti_web/blob/master/static/publish.png)
